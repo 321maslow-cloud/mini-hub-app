@@ -5,46 +5,63 @@
     <title>КриптоТрекер</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
+            --bg-color: #efeff3; /* Цвет фона как в ТГ */
             --text-color: #000;
             --card-bg: #fff;
-            --button-bg: #008CBA;
-            --button-text: #fff;
-            --search-border: #ccc;
-            --header-bg: #4CAF50;
+            --header-bg: #5887ff; /* Цвет шапки как в ТГ */
             --header-text: #fff;
+            --button-bg: #5887ff; /* Цвет кнопок как в ТГ */
+            --button-text: #fff;
+            --search-bg: #fff;
+            --search-border: #d9d9e3;
+            --active-tab: #5887ff;
+            --inactive-tab: #c5c5d2;
+            --shadow: 0 2px 12px rgba(0,0,0,0.05);
+            --border-radius: 10px;
         }
 
         .dark-theme {
-            --bg-color: #121212;
+            --bg-color: #0f0f13; /* Тёмный фон как в ТГ */
             --text-color: #fff;
-            --card-bg: #1e1e1e;
-            --button-bg: #4CAF50;
-            --button-text: #fff;
-            --search-border: #555;
-            --header-bg: #2e7d32;
+            --card-bg: #1f2023;
+            --header-bg: #5887ff;
             --header-text: #fff;
+            --button-bg: #5887ff;
+            --button-text: #fff;
+            --search-bg: #2d2e33;
+            --search-border: #3a3b40;
+            --active-tab: #5887ff;
+            --inactive-tab: #5e5e6b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 20px;
-            text-align: center;
-            transition: background-color 0.3s, color 0.3s;
+            padding: 0;
             margin: 0;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .header {
             background-color: var(--header-bg);
             color: var(--header-text);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .settings {
@@ -52,174 +69,188 @@
             gap: 10px;
         }
 
-        .settings select, .settings button {
-            padding: 8px 12px;
+        .settings select {
             background-color: rgba(255, 255, 255, 0.2);
             color: var(--header-text);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
             cursor: pointer;
-            font-size: 14px;
         }
 
-        .search-container {
-            margin: 30px auto;
-            width: 80%;
-            max-width: 600px;
+        .container {
+            padding: 16px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .search-box input {
-            padding: 16px;
-            width: 70%;
+            flex: 1;
+            padding: 14px 16px;
             font-size: 16px;
-            border: 2px solid var(--search-border);
-            border-radius: 10px;
-            background-color: var(--card-bg);
+            border: 1px solid var(--search-border);
+            border-radius: var(--border-radius);
+            background-color: var(--search-bg);
             color: var(--text-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
 
         .search-box button {
-            padding: 16px 22px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-left: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
-        }
-
-        .search-box button:hover {
-            background-color: #45a049;
-        }
-
-        .chart-container {
-            margin-top: 30px;
-            display: none; /* Скрыто до поиска */
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .time-buttons {
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .time-buttons button {
-            padding: 10px 15px;
+            padding: 14px 20px;
             background-color: var(--button-bg);
             color: var(--button-text);
             border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .popular-crypto {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .popular-crypto button {
+            white-space: nowrap;
+            padding: 8px 16px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--search-border);
             border-radius: 20px;
             cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.3s;
         }
 
-        .time-buttons button:hover {
-            opacity: 0.9;
-        }
-
-        .time-buttons button.active {
-            background-color: #4CAF50;
-            color: white;
+        .chart-container {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
         }
 
         .price-info {
-            margin: 20px 0;
             font-size: 18px;
             font-weight: bold;
-            background-color: rgba(76, 175, 80, 0.1);
+            margin: 16px 0;
+            text-align: center;
+            padding: 12px;
+            background-color: rgba(88, 135, 255, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .time-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .time-buttons button {
+            flex: 1;
             padding: 10px;
-            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--inactive-tab);
+            border: 1px solid var(--search-border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
         }
 
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            margin-top: 20px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            opacity: 0.9;
+        .time-buttons button.active {
+            background-color: var(--active-tab);
+            color: white;
+            border-color: var(--active-tab);
         }
 
         canvas {
             width: 100% !important;
-            max-width: 800px;
-            height: auto !important;
+            height: 300px !important;
+            margin-top: 16px;
         }
 
-        .popular-crypto {
+        .back-button {
+            display: inline-block;
+            padding: 14px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            border-radius: var(--border-radius);
             margin-top: 20px;
-            font-size: 14px;
-            color: #666;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center;
         }
 
-        .dark-theme .popular-crypto {
-            color: #aaa;
+        .crypto-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
-    <!-- Шапка с настройками -->
     <div class="header">
         <h1>🪙 КриптоТрекер</h1>
         <div class="settings">
             <select id="theme-select" onchange="changeTheme()">
-                <option value="light">☀️ Светлая</option>
-                <option value="dark">🌙 Тёмная</option>
+                <option value="light">☀️</option>
+                <option value="dark">🌙</option>
             </select>
             <select id="currency-select" onchange="changeCurrency()">
-                <option value="usd">💵 USD</option>
-                <option value="eur">🇪🇺 EUR</option>
-                <option value="rub">🇷🇺 RUB</option>
-                <option value="gbp">🇬🇧 GBP</option>
-                <option value="jpy">🇯🇵 JPY</option>
+                <option value="usd">💵</option>
+                <option value="eur">🇪🇺</option>
+                <option value="rub">🇷🇺</option>
+                <option value="gbp">🇬🇧</option>
+                <option value="jpy">🇯🇵</option>
             </select>
         </div>
     </div>
 
-    <div class="search-container">
+    <div class="container">
         <div class="search-box">
-            <input type="text" id="crypto-input" placeholder="Введите криптовалюту (например, ton, doge, shib...)">
-            <button onclick="searchCrypto()">🔍 Найти</button>
+            <input type="text" id="crypto-input" placeholder="Поиск криптовалюты...">
+            <button onclick="searchCrypto()">🔍</button>
         </div>
+
         <div class="popular-crypto">
-            Популярные: TON, DOGE, SHIB, PEPE, SOL, BTC, ETH...
+            <button onclick="selectCrypto('bitcoin')">₿ BTC</button>
+            <button onclick="selectCrypto('ethereum')">Ξ ETH</button>
+            <button onclick="selectCrypto('ton')">TON</button>
+            <button onclick="selectCrypto('solana')">◎ SOL</button>
+            <button onclick="selectCrypto('dogecoin')">Ð DOGE</button>
+            <button onclick="selectCrypto('shiba-inu')">SHIB</button>
         </div>
-    </div>
 
-    <div class="chart-container" id="chart-container">
-        <div class="price-info" id="price-info">
-            <!-- Цена и процент -->
+        <div class="chart-container" id="chart-container">
+            <div class="price-info" id="price-info">
+                <!-- Цена и процент -->
+            </div>
+            <div class="time-buttons">
+                <button onclick="loadChart('1h')" class="active">1ч</button>
+                <button onclick="loadChart('1d')">1д</button>
+                <button onclick="loadChart('7d')">1н</button>
+                <button onclick="loadChart('30d')">1м</button>
+                <button onclick="loadChart('1y')">1г</button>
+                <button onclick="loadChart('max')">Все</button>
+            </div>
+            <canvas id="chart"></canvas>
         </div>
-        <div class="time-buttons">
-            <button onclick="loadChart('1h')" class="active">1ч</button>
-            <button onclick="loadChart('1d')">1д</button>
-            <button onclick="loadChart('7d')">1н</button>
-            <button onclick="loadChart('30d')">1м</button>
-            <button onclick="loadChart('1y')">1г</button>
-            <button onclick="loadChart('max')">Все</button>
-        </div>
-        <canvas id="chart"></canvas>
-    </div>
 
-    <a href="/" class="button">◀️ Назад в хаб</a>
+        <a href="/" class="back-button">◀️ Назад в хаб</a>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -267,6 +298,12 @@
                               activeButton.textContent === '1г' ? '1y' : 'max');
                 }
             }
+        }
+
+        // Функция выбора популярной крипты
+        function selectCrypto(crypto) {
+            document.getElementById('crypto-input').value = crypto;
+            searchCrypto();
         }
 
         // Функция поиска крипты
@@ -352,13 +389,13 @@
 
                 window.myChart = new Chart(ctx, {
                     type: 'line',
-                    data: {
+                     {
                         labels: labels,
                         datasets: [{
                             label: currentCryptoId,
-                            data: values,
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                             values,
+                            borderColor: '#5887ff',
+                            backgroundColor: 'rgba(88, 135, 255, 0.1)',
                             borderWidth: 3,
                             fill: true,
                             tension: 0.3
