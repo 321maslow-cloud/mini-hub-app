@@ -259,6 +259,7 @@
 
         // Загрузка настроек из localStorage
         window.onload = function() {
+            console.log("Страница загружена");
             const savedTheme = localStorage.getItem('theme') || 'light';
             const savedCurrency = localStorage.getItem('currency') || 'usd';
 
@@ -273,6 +274,7 @@
 
         // Функция смены темы
         function changeTheme() {
+            console.log("Смена темы");
             const theme = document.getElementById('theme-select').value;
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');
@@ -284,6 +286,7 @@
 
         // Функция смены валюты
         function changeCurrency() {
+            console.log("Смена валюты");
             currentCurrency = document.getElementById('currency-select').value;
             localStorage.setItem('currency', currentCurrency);
 
@@ -302,12 +305,14 @@
 
         // Функция выбора популярной крипты
         function selectCrypto(crypto) {
+            console.log("Выбрана крипта:", crypto);
             document.getElementById('crypto-input').value = crypto;
             searchCrypto();
         }
 
         // Функция поиска крипты
         async function searchCrypto() {
+            console.log("Поиск крипты");
             const input = document.getElementById('crypto-input').value.trim().toLowerCase();
 
             if (!input) {
@@ -339,6 +344,7 @@
 
         // Функция загрузки графика
         async function loadChart(days) {
+            console.log("Загрузка графика:", days);
             if (!currentCryptoId) return;
 
             // Сбросим активные кнопки
