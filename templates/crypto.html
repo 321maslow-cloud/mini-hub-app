@@ -376,11 +376,11 @@
 
                 window.myChart = new Chart(ctx, {
                     type: 'line',
-                     {
+                    data: {
                         labels: labels,
                         datasets: [{
                             label: currentCryptoId,
-                             values,
+                            data: values,
                             borderColor: '#5887ff',
                             backgroundColor: 'rgba(88, 135, 255, 0.1)',
                             borderWidth: 3,
