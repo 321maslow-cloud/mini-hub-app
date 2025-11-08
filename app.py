@@ -1,7 +1,9 @@
 import os
 from flask import Flask, render_template
 
-app = Flask(__name__)
+app = Flask(__name__)  # <-- должно быть app
+
+# === Тут твой код ===
 
 # === Главная страница (хаб) ===
 @app.route('/')
