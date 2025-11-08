@@ -5,12 +5,12 @@
     <title>КриптоТрекер</title>
     <style>
         :root {
-            --bg-color: #efeff3; /* Цвет фона как в ТГ */
+            --bg-color: #efeff3;
             --text-color: #000;
             --card-bg: #fff;
-            --header-bg: #5887ff; /* Цвет шапки как в ТГ */
+            --header-bg: #5887ff;
             --header-text: #fff;
-            --button-bg: #5887ff; /* Цвет кнопок как в ТГ */
+            --button-bg: #5887ff;
             --button-text: #fff;
             --search-bg: #fff;
             --search-border: #d9d9e3;
@@ -21,7 +21,7 @@
         }
 
         .dark-theme {
-            --bg-color: #0f0f13; /* Тёмный фон как в ТГ */
+            --bg-color: #0f0f13;
             --text-color: #fff;
             --card-bg: #1f2023;
             --header-bg: #5887ff;
@@ -239,12 +239,12 @@
                 <!-- Цена и процент -->
             </div>
             <div class="time-buttons">
-                <button onclick="loadChart('1h')" class="active">1ч</button>
-                <button onclick="loadChart('1d')">1д</button>
-                <button onclick="loadChart('7d')">1н</button>
-                <button onclick="loadChart('30d')">1м</button>
-                <button onclick="loadChart('1y')">1г</button>
-                <button onclick="loadChart('max')">Все</button>
+                <button onclick="loadChart(this, '1h')" class="active">1ч</button>
+                <button onclick="loadChart(this, '1d')">1д</button>
+                <button onclick="loadChart(this, '7d')">1н</button>
+                <button onclick="loadChart(this, '30d')">1м</button>
+                <button onclick="loadChart(this, '1y')">1г</button>
+                <button onclick="loadChart(this, 'max')">Все</button>
             </div>
             <canvas id="chart"></canvas>
         </div>
@@ -278,7 +278,7 @@
             if (currentCryptoId) {
                 const activeButton = document.querySelector('.time-buttons button.active');
                 if (activeButton) {
-                    loadChart(activeButton.textContent === '1ч' ? '1h' :
+                    loadChart(activeButton, activeButton.textContent === '1ч' ? '1h' :
                               activeButton.textContent === '1д' ? '1d' :
                               activeButton.textContent === '1н' ? '7d' :
                               activeButton.textContent === '1м' ? '30d' :
@@ -317,7 +317,7 @@
 
                 currentCryptoId = coin.id;
                 document.getElementById('chart-container').style.display = 'block';
-                loadChart('1d'); // Загрузим график за 1 день по умолчанию
+                loadChart(document.querySelector('.time-buttons button.active'), '1d'); // Загрузим график за 1 день по умолчанию
             } catch (error) {
                 console.error('Ошибка поиска:', error);
                 alert('Ошибка при поиске криптовалюты');
@@ -325,12 +325,12 @@
         }
 
         // === Функция загрузки графика ===
-        async function loadChart(days) {
+        async function loadChart(button, days) {
             if (!currentCryptoId) return;
 
             // Сбросим активные кнопки
             document.querySelectorAll('.time-buttons button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
 
             // Выберем интервал
             let url;
@@ -376,11 +376,11 @@
 
                 window.myChart = new Chart(ctx, {
                     type: 'line',
-                    data: {
+                     {
                         labels: labels,
                         datasets: [{
                             label: currentCryptoId,
-                            data: values,
+                             values,
                             borderColor: '#5887ff',
                             backgroundColor: 'rgba(88, 135, 255, 0.1)',
                             borderWidth: 3,
