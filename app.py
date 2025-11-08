@@ -1,9 +1,6 @@
-import os
 from flask import Flask, render_template
 
-app = Flask(__name__)  # <-- должно быть app
-
-# === Тут твой код ===
+app = Flask(__name__)
 
 # === Главная страница (хаб) ===
 @app.route('/')
@@ -24,7 +21,3 @@ def news():
 @app.route('/profile')
 def profile():
     return render_template('profile.html')
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)  # <-- debug=False
