@@ -254,27 +254,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // === Глобальные переменные ===
         let currentCryptoId = '';
         let currentCurrency = 'usd';
 
-        // Загрузка настроек из localStorage
-        window.onload = function() {
-            console.log("Страница загружена");
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            const savedCurrency = localStorage.getItem('currency') || 'usd';
-
-            document.getElementById('theme-select').value = savedTheme;
-            document.getElementById('currency-select').value = savedCurrency;
-
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-            }
-            currentCurrency = savedCurrency;
-        };
-
-        // Функция смены темы
+        // === Функция смены темы ===
         function changeTheme() {
-            console.log("Смена темы");
             const theme = document.getElementById('theme-select').value;
             if (theme === 'dark') {
                 document.body.classList.add('dark-theme');
@@ -284,9 +269,8 @@
             localStorage.setItem('theme', theme);
         }
 
-        // Функция смены валюты
+        // === Функция смены валюты ===
         function changeCurrency() {
-            console.log("Смена валюты");
             currentCurrency = document.getElementById('currency-select').value;
             localStorage.setItem('currency', currentCurrency);
 
@@ -303,16 +287,14 @@
             }
         }
 
-        // Функция выбора популярной крипты
+        // === Функция выбора популярной крипты ===
         function selectCrypto(crypto) {
-            console.log("Выбрана крипта:", crypto);
             document.getElementById('crypto-input').value = crypto;
             searchCrypto();
         }
 
-        // Функция поиска крипты
+        // === Функция поиска крипты ===
         async function searchCrypto() {
-            console.log("Поиск крипты");
             const input = document.getElementById('crypto-input').value.trim().toLowerCase();
 
             if (!input) {
@@ -342,9 +324,8 @@
             }
         }
 
-        // Функция загрузки графика
+        // === Функция загрузки графика ===
         async function loadChart(days) {
-            console.log("Загрузка графика:", days);
             if (!currentCryptoId) return;
 
             // Сбросим активные кнопки
@@ -423,12 +404,26 @@
             }
         }
 
-        // Позволим искать по нажатию Enter
+        // === Позволим искать по нажатию Enter ===
         document.getElementById('crypto-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchCrypto();
             }
         });
+
+        // === Загрузка настроек из localStorage ===
+        window.onload = function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedCurrency = localStorage.getItem('currency') || 'usd';
+
+            document.getElementById('theme-select').value = savedTheme;
+            document.getElementById('currency-select').value = savedCurrency;
+
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+            currentCurrency = savedCurrency;
+        };
     </script>
 </body>
 </html>
