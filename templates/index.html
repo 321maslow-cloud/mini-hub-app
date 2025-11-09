@@ -73,37 +73,8 @@
         }
 
         .controls {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 10px;
-            width: 200px;
-            height: 200px;
-            display: none; /* Скрыты на ПК */
+            display: none; /* Скрыты всегда */
         }
-
-        @media (max-width: 600px) {
-            .controls {
-                display: grid;
-            }
-        }
-
-        .control-btn {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border: 1px solid #3a3b40;
-            border-radius: var(--border-radius);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .up { grid-column: 2; grid-row: 1; }
-        .left { grid-column: 1; grid-row: 2; }
-        .right { grid-column: 3; grid-row: 2; }
-        .down { grid-column: 2; grid-row: 3; }
 
         .start-btn {
             padding: 12px 24px;
@@ -129,6 +100,13 @@
             text-align: center;
             display: none;
         }
+
+        .instructions {
+            color: var(--secondary-text);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -145,13 +123,7 @@
         <canvas id="game-board" width="300" height="300"></canvas>
 
         <button class="start-btn" id="start-btn">▶️ Начать</button>
-
-        <div class="controls">
-            <div class="control-btn up" onclick="changeDirection('up')">⬆️</div>
-            <div class="control-btn left" onclick="changeDirection('left')">⬅️</div>
-            <div class="control-btn right" onclick="changeDirection('right')">➡️</div>
-            <div class="control-btn down" onclick="changeDirection('down')">⬇️</div>
-        </div>
+        <div class="instructions">На ПК: WASD или стрелки. На телефоне: свайпы по экрану.</div>
     </div>
 
     <div class="game-over" id="game-over">
@@ -172,15 +144,25 @@
         const gridSize = 15;
         const tileCount = canvas.width / gridSize;
 
-        let snake = [{x: 10, y: 10}];
-        let food = {x: 5, y: 5};
+        let snake = [];
+        let food = {};
         let dx = 0;
         let dy = 0;
         let score = 0;
         let highScore = localStorage.getItem('snakeHighScore') || 0;
         let gameRunning = false;
+        let gameStarted = false; // Новое: проверка, начата ли игра
 
         highScoreDisplay.textContent = highScore;
+
+        function initGame() {
+            snake = [{x: 10, y: 10}];
+            dx = 0;
+            dy = 0;
+            score = 0;
+            scoreDisplay.textContent = score;
+            generateFood();
+        }
 
         function drawSnake() {
             ctx.fillStyle = '#4CAF50';
@@ -195,6 +177,8 @@
         }
 
         function moveSnake() {
+            if (dx === 0 && dy === 0) return; // Не двигаемся, если нет направления
+
             const head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
             if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
@@ -251,10 +235,20 @@
         }
 
         function startGame() {
-            if (gameRunning) return;
+            if (gameStarted) {
+                // Если игра уже начата, то ставим на паузу/снимаем с паузы
+                if (gameRunning) {
+                    pauseGame();
+                } else {
+                    resumeGame();
+                }
+                return;
+            }
 
-            resetGame();
+            // Первая игра
+            initGame();
             gameRunning = true;
+            gameStarted = true;
             startBtn.textContent = '⏸️ Пауза';
             gameLoop();
         }
@@ -264,18 +258,15 @@
             startBtn.textContent = '▶️ Продолжить';
         }
 
-        function toggleGame() {
-            if (gameRunning) {
-                pauseGame();
-            } else {
-                startBtn.textContent = '⏸️ Пауза';
-                gameRunning = true;
-                gameLoop();
-            }
+        function resumeGame() {
+            gameRunning = true;
+            startBtn.textContent = '⏸️ Пауза';
+            gameLoop();
         }
 
         function gameOver() {
             gameRunning = false;
+            gameStarted = false; // Сбрасываем, чтобы можно было снова нажать "Начать"
             startBtn.textContent = '▶️ Начать';
             finalScoreDisplay.textContent = score;
 
@@ -289,17 +280,12 @@
         }
 
         function resetGame() {
-            snake = [{x: 10, y: 10}];
-            dx = 0;
-            dy = 0;
-            score = 0;
-            scoreDisplay.textContent = score;
-            generateFood();
             gameOverScreen.style.display = 'none';
+            // Игра начнётся заново при нажатии "Начать"
         }
 
         function changeDirection(direction) {
-            if (!gameRunning) return;
+            if (!gameRunning || (dx === 0 && dy === 0 && !gameStarted)) return; // Не меняем, если игра не начата
 
             switch (direction) {
                 case 'up':
@@ -331,7 +317,7 @@
 
         // Управление с клавиатуры (WASD и стрелки)
         document.addEventListener('keydown', e => {
-            if (!gameRunning) return;
+            if (!gameStarted) return; // Только если игра начата
 
             switch (e.key.toLowerCase()) {
                 case 'w':
@@ -372,6 +358,8 @@
         });
 
         canvas.addEventListener('touchend', e => {
+            if (!gameStarted) return; // Только если игра начата
+
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
 
@@ -397,8 +385,9 @@
             e.preventDefault(); // Предотвращаем прокрутку
         });
 
-        startBtn.addEventListener('click', toggleGame);
-        generateFood();
+        startBtn.addEventListener('click', startGame);
+        // Инициализация игры (но не запуск)
+        initGame();
     </script>
 </body>
 </html>
