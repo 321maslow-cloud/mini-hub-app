@@ -8,7 +8,7 @@
             --bg-color: #0f0f13;
             --card-bg: #1f2023;
             --text-color: #ffffff;
-            --accent-color: #0088cc;
+            --accent-color: #006699; /* Темнее синий */
             --secondary-text: #8a8e97;
             --border-radius: 16px;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -70,10 +70,6 @@
             margin-bottom: 20px;
             font-size: 18px;
             font-weight: 600;
-        }
-
-        .controls {
-            display: none; /* Скрыты всегда */
         }
 
         .start-btn {
@@ -151,13 +147,18 @@
         let score = 0;
         let highScore = localStorage.getItem('snakeHighScore') || 0;
         let gameRunning = false;
-        let gameStarted = false; // Новое: проверка, начата ли игра
+        let gameStarted = false;
 
         highScoreDisplay.textContent = highScore;
 
         function initGame() {
-            snake = [{x: 10, y: 10}];
-            dx = 0;
+            // Стартовая змейка: 3 сегмента, идущие вправо
+            snake = [
+                {x: 10, y: 10}, // Голова
+                {x: 9, y: 10}, // Тело
+                {x: 8, y: 10}  // Хвост
+            ];
+            dx = 1; // Начальное направление: вправо
             dy = 0;
             score = 0;
             scoreDisplay.textContent = score;
@@ -177,7 +178,7 @@
         }
 
         function moveSnake() {
-            if (dx === 0 && dy === 0) return; // Не двигаемся, если нет направления
+            if (dx === 0 && dy === 0) return;
 
             const head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
@@ -198,23 +199,54 @@
             if (head.x === food.x && head.y === food.y) {
                 score++;
                 scoreDisplay.textContent = score;
-                generateFood();
+                generateFood(); // Создаём новую еду
             } else {
-                snake.pop();
+                snake.pop(); // Убираем хвост, если не съели еду
             }
         }
 
         function generateFood() {
-            food.x = Math.floor(Math.random() * tileCount);
-            food.y = Math.floor(Math.random() * tileCount);
+            // Минимальное расстояние от старой еды (если возможно)
+            const minDistance = 5;
+            let newFood;
+            let attempts = 0; // Ограничиваем количество попыток
+            const maxAttempts = 100;
 
-            // Проверяем, чтобы еда не появилась на змейке
-            for (let segment of snake) {
-                if (segment.x === food.x && segment.y === food.y) {
-                    generateFood();
+            do {
+                // Отступ в 1 клетку от края: [1, tileCount - 2]
+                newFood = {
+                    x: Math.floor(Math.random() * (tileCount - 2)) + 1,
+                    y: Math.floor(Math.random() * (tileCount - 2)) + 1
+                };
+
+                attempts++;
+
+                // Проверяем, не рядом ли с предыдущей едой (если она была)
+                let tooClose = false;
+                if (food.x !== undefined && food.y !== undefined) {
+                    const dx = newFood.x - food.x;
+                    const dy = newFood.y - food.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < minDistance) {
+                        tooClose = true;
+                    }
+                }
+
+                // Проверяем, не на змейке ли новая еда
+                for (let segment of snake) {
+                    if (segment.x === newFood.x && segment.y === newFood.y) {
+                        tooClose = true;
+                        break;
+                    }
+                }
+
+                // Если не рядом и не на змейке, или слишком много попыток
+                if (!tooClose || attempts >= maxAttempts) {
+                    food = newFood;
                     break;
                 }
-            }
+
+            } while (attempts < maxAttempts);
         }
 
         function draw() {
@@ -236,7 +268,6 @@
 
         function startGame() {
             if (gameStarted) {
-                // Если игра уже начата, то ставим на паузу/снимаем с паузы
                 if (gameRunning) {
                     pauseGame();
                 } else {
@@ -245,7 +276,6 @@
                 return;
             }
 
-            // Первая игра
             initGame();
             gameRunning = true;
             gameStarted = true;
@@ -266,7 +296,7 @@
 
         function gameOver() {
             gameRunning = false;
-            gameStarted = false; // Сбрасываем, чтобы можно было снова нажать "Начать"
+            gameStarted = false;
             startBtn.textContent = '▶️ Начать';
             finalScoreDisplay.textContent = score;
 
@@ -281,33 +311,32 @@
 
         function resetGame() {
             gameOverScreen.style.display = 'none';
-            // Игра начнётся заново при нажатии "Начать"
         }
 
         function changeDirection(direction) {
-            if (!gameRunning || (dx === 0 && dy === 0 && !gameStarted)) return; // Не меняем, если игра не начата
+            if (!gameRunning || (dx === 0 && dy === 0 && !gameStarted)) return;
 
             switch (direction) {
                 case 'up':
-                    if (dy === 0) { // Не двигаемся вниз
+                    if (dy !== 1) {
                         dx = 0;
                         dy = -1;
                     }
                     break;
                 case 'down':
-                    if (dy === 0) { // Не двигаемся вверх
+                    if (dy !== -1) {
                         dx = 0;
                         dy = 1;
                     }
                     break;
                 case 'left':
-                    if (dx === 0) { // Не двигаемся вправо
+                    if (dx !== 1) {
                         dx = -1;
                         dy = 0;
                     }
                     break;
                 case 'right':
-                    if (dx === 0) { // Не двигаемся влево
+                    if (dx !== -1) {
                         dx = 1;
                         dy = 0;
                     }
@@ -315,9 +344,8 @@
             }
         }
 
-        // Управление с клавиатуры (WASD и стрелки)
         document.addEventListener('keydown', e => {
-            if (!gameStarted) return; // Только если игра начата
+            if (!gameStarted) return;
 
             switch (e.key.toLowerCase()) {
                 case 'w':
@@ -343,22 +371,21 @@
             }
         });
 
-        // Управление свайпами (для мобильных устройств)
         let touchStartX = 0;
         let touchStartY = 0;
 
         canvas.addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-            e.preventDefault(); // Предотвращаем прокрутку
+            e.preventDefault();
         });
 
         canvas.addEventListener('touchmove', e => {
-            e.preventDefault(); // Предотвращаем прокрутку
+            e.preventDefault();
         });
 
         canvas.addEventListener('touchend', e => {
-            if (!gameStarted) return; // Только если игра начата
+            if (!gameStarted) return;
 
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
@@ -366,28 +393,24 @@
             const dx = touchEndX - touchStartX;
             const dy = touchEndY - touchStartY;
 
-            // Определяем направление свайпа
             if (Math.abs(dx) > Math.abs(dy)) {
-                // Горизонтальный свайп
                 if (dx > 0) {
                     changeDirection('right');
                 } else {
                     changeDirection('left');
                 }
             } else {
-                // Вертикальный свайп
                 if (dy > 0) {
                     changeDirection('down');
                 } else {
                     changeDirection('up');
                 }
             }
-            e.preventDefault(); // Предотвращаем прокрутку
+            e.preventDefault();
         });
 
         startBtn.addEventListener('click', startGame);
-        // Инициализация игры (но не запуск)
-        initGame();
+        initGame(); // Инициализация при загрузке
     </script>
 </body>
 </html>
