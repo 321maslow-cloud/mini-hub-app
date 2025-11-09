@@ -4,27 +4,137 @@
     <meta charset="UTF-8">
     <title>Профиль</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            text-align: center;
-            padding-top: 50px;
+        :root {
+            --bg-color: #0f0f13;
+            --card-bg: #1f2023;
+            --text-color: #ffffff;
+            --accent-color: #0088cc;
+            --secondary-text: #8a8e97;
+            --border-radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --font-main: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .button {
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 20px 16px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        .container {
+            padding: 24px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .profile-id {
+            font-size: 14px;
+            color: var(--secondary-text);
+            margin: 0 0 24px 0;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 24px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--secondary-text);
+        }
+
+        .back-button {
             display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: #008CBA;
+            padding: 16px;
+            background-color: var(--accent-color);
             color: white;
             text-decoration: none;
+            border-radius: 12px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
             font-size: 16px;
-            border-radius: 5px;
+            font-weight: 500;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Профиль</h1>
-    <p>Здесь будет информация о пользователе.</p>
-    <a href="/" class="button">Назад в хаб</a>
+    <div class="header">
+        <h1>👤 Профиль</h1>
+    </div>
+
+    <div class="container">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">Александр</div>
+        <div class="profile-id">ID: 123456789</div>
+
+        <div class="profile-stats">
+            <div class="stat-box">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Транзакций</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">3</div>
+                <div class="stat-label">NFT</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Подписки</div>
+            </div>
+        </div>
+
+        <a href="/" class="back-button">◀️ Назад в хаб</a>
+    </div>
 </body>
 </html>

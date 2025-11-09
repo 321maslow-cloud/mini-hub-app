@@ -5,47 +5,27 @@
     <title>КриптоТрекер</title>
     <style>
         :root {
-            --bg-color: #efeff3; /* Цвет фона как в ТГ */
-            --text-color: #000;
-            --card-bg: #fff;
-            --header-bg: #5887ff; /* Цвет шапки как в ТГ */
-            --header-text: #fff;
-            --button-bg: #5887ff; /* Цвет кнопок как в ТГ */
-            --button-text: #fff;
-            --search-bg: #fff;
-            --search-border: #d9d9e3;
-            --shadow: 0 2px 12px rgba(0,0,0,0.05);
-            --border-radius: 10px;
-        }
-
-        .dark-theme {
-            --bg-color: #0f0f13; /* Тёмный фон как в ТГ */
-            --text-color: #fff;
+            --bg-color: #0f0f13;
             --card-bg: #1f2023;
-            --header-bg: #5887ff;
-            --header-text: #fff;
-            --button-bg: #5887ff;
-            --button-text: #fff;
-            --search-bg: #2d2e33;
-            --search-border: #3a3b40;
+            --text-color: #ffffff;
+            --accent-color: #0088cc;
+            --secondary-text: #8a8e97;
+            --border-radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --font-main: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-main);
             background-color: var(--bg-color);
             color: var(--text-color);
             padding: 0;
             margin: 0;
-            transition: background-color 0.3s, color 0.3s;
         }
 
         .header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background-color: var(--card-bg);
+            padding: 20px 16px;
             box-shadow: var(--shadow);
             position: sticky;
             top: 0;
@@ -54,36 +34,79 @@
 
         .header h1 {
             margin: 0;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--accent-color);
         }
 
         .container {
-            padding: 16px;
+            padding: 24px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tab-buttons {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 8px 0;
+            margin-bottom: 16px;
+        }
+
+        .tab-button {
+            flex-shrink: 0;
+            padding: 12px 20px;
+            background-color: var(--card-bg);
+            color: var(--secondary-text);
+            border: 1px solid #3a3b40;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-top: 16px;
             text-align: center;
         }
 
+        .tab-content.active {
+            display: block;
+        }
+
         .message {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 50px;
-            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 500;
+            margin: 20px 0;
+            color: var(--secondary-text);
         }
 
         .back-button {
             display: inline-block;
-            padding: 14px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
+            padding: 16px;
+            background-color: var(--accent-color);
+            color: white;
             text-decoration: none;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             margin-top: 30px;
             width: 100%;
             max-width: 300px;
             box-sizing: border-box;
             font-size: 16px;
+            font-weight: 500;
             text-align: center;
         }
     </style>
@@ -94,11 +117,66 @@
     </div>
 
     <div class="container">
-        <div class="message">
-            Скоро здесь будет крипта
+        <!-- Кнопки вкладок -->
+        <div class="tab-buttons">
+            <span class="tab-button active" onclick="openTab('home')">🏠 Главная</span>
+            <span class="tab-button" onclick="openTab('receive')">📥 Получить</span>
+            <span class="tab-button" onclick="openTab('send')">📤 Отправить</span>
+            <span class="tab-button" onclick="openTab('swap')">🔄 Своп</span>
+            <span class="tab-button" onclick="openTab('nft')">🖼️ NFT</span>
+        </div>
+
+        <!-- Вкладка Главная -->
+        <div id="home" class="tab-content active">
+            <h2>Главная</h2>
+            <p class="message">Скоро здесь будет крипта</p>
+        </div>
+
+        <!-- Вкладка Получить -->
+        <div id="receive" class="tab-content">
+            <h2>Получить</h2>
+            <p class="message">Скоро здесь будет крипта</p>
+        </div>
+
+        <!-- Вкладка Отправить -->
+        <div id="send" class="tab-content">
+            <h2>Отправить</h2>
+            <p class="message">Скоро здесь будет крипта</p>
+        </div>
+
+        <!-- Вкладка Своп -->
+        <div id="swap" class="tab-content">
+            <h2>Своп</h2>
+            <p class="message">Скоро здесь будет крипта</p>
+        </div>
+
+        <!-- Вкладка NFT -->
+        <div id="nft" class="tab-content">
+            <h2>NFT</h2>
+            <p class="message">Скоро здесь будет крипта</p>
         </div>
 
         <a href="/" class="back-button">◀️ Назад в хаб</a>
     </div>
+
+    <script>
+        function openTab(tabName) {
+            // Скрыть все вкладки
+            const tabs = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+
+            // Убрать активный класс у всех кнопок
+            const buttons = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>
 </body>
 </html>
